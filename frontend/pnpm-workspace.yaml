@@ -1,0 +1,7 @@
+packages:
+  - '.'
+
+engineStrict: true
+
+minimumReleaseAgeExclude:
+  - react-router@8.5.0

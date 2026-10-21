@@ -1,0 +1,17 @@
+# Lowest-precedence defaults for every application that has saga-messaging on its classpath.
+# A service's application.yaml, the environment or the command line override any of these.
+# The management.opentelemetry.* and management.otlp.* keys bind only when the OpenTelemetry
+# starter is present; under another bridge, or no bridge, Spring Boot ignores them.
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+  otlp:
+    metrics:
+      export:
+        enabled: false

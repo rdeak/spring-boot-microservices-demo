@@ -1,0 +1,1 @@
+org.springframework.boot.EnvironmentPostProcessor=hr.bertlab.saga.messaging.SagaMessagingDefaults

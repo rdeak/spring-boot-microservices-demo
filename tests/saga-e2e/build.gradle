@@ -1,0 +1,10 @@
+dependencies {
+    testImplementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    testImplementation project(':services:order-service')
+    testImplementation project(':services:inventory-service')
+    testImplementation project(':services:shipping-service')
+    testImplementation testFixtures(project(':libs:saga-messaging'))
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    testImplementation 'org.springframework.boot:spring-boot-docker-compose'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

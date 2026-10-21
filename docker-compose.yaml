@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:18.6
+    restart: unless-stopped
+    labels:
+      org.springframework.boot.ignore: true
+    environment:
+      POSTGRES_DB: ${DB_NAME:-micro-services}
+      POSTGRES_USER: ${DB_USER:-dev}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dev} -d ${DB_NAME:-micro-services}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    restart: unless-stopped
+    labels:
+      org.springframework.boot.ignore: true
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-dev}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-dev}
+    volumes:
+      - ./infra/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  jaeger:
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.22.0
+    restart: unless-stopped
+    labels:
+      org.springframework.boot.ignore: true
+    ports:
+      - "16686:16686"
+      - "4318:4318"
+
+volumes:
+  postgres_data:
+  rabbitmq_data:

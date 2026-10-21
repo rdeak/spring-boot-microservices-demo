@@ -1,0 +1,8 @@
+rootProject.name = 'micro-services-example'
+
+include 'libs:saga-messaging'
+include 'services:api-gateway'
+include 'services:order-service'
+include 'services:inventory-service'
+include 'services:shipping-service'
+include 'tests:saga-e2e'

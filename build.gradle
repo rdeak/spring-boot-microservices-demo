@@ -1,0 +1,76 @@
+plugins {
+    id 'org.springframework.boot' version '4.1.1' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'com.diffplug.spotless' version '8.10.0'
+    id 'net.ltgt.errorprone' version '5.1.1' apply false
+    id 'net.ltgt.nullaway' version '3.3.0' apply false
+}
+
+description = 'micro-services-example'
+
+// Root project formats all non-Java files across the whole repo.
+spotless {
+    format 'misc', {
+        target '**/*.gradle', '**/.gitignore', '*.md',
+                '*.yml', '*.yaml', '**/src/**/resources/**/*.yml', '**/src/**/resources/**/*.yaml'
+        targetExclude '**/build/**', '**/.gradle/**'
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+        endWithNewline()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.diffplug.spotless'
+    apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'net.ltgt.nullaway'
+
+    group = 'hr.bertlab'
+    version = '0.0.1-SNAPSHOT'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        errorprone 'com.google.errorprone:error_prone_core:2.50.0'
+        errorprone 'com.uber.nullaway:nullaway:0.14.2'
+    }
+
+    nullaway {
+        error()
+        annotatedPackages.add('hr.bertlab')
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.errorprone {
+            disableWarningsInGeneratedCode = true
+        }
+    }
+
+    spotless {
+        java {
+            target 'src/*/java/**/*.java'
+            palantirJavaFormat('2.102.0')
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
+
+    tasks.named('compileTestJava') {
+        options.errorprone.nullaway.handleTestAssertionLibraries = true
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}

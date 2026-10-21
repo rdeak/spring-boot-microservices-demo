@@ -1,0 +1,33 @@
+spring:
+  config:
+    import: optional:file:../../.env[.properties],classpath:saga-messaging-tracing.yaml
+  application:
+    name: saga-messaging-test
+  docker:
+    compose:
+      file: ../../docker-compose.yaml
+      lifecycle-management: start-only
+      skip:
+        in-tests: false
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:micro-services}
+    username: ${DB_USER:dev}
+    password: ${DB_PASSWORD:dev}
+    hikari:
+      schema: ${app.schema}
+  flyway:
+    schemas: ${app.schema}
+    locations: classpath:db/saga-messaging
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:dev}
+    password: ${RABBITMQ_PASSWORD:dev}
+
+app:
+  schema: saga_lib
+
+saga:
+  messaging:
+    service: inventory
+    admin-path: /admin
