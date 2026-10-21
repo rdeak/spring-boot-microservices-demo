@@ -1,4 +1,4 @@
-# micro-services-example
+# spring-boot-microservices-demo
 
 An order, inventory and shipping workflow built as a choreography saga on RabbitMQ with Spring Boot 4.1 and
 Java 21. The messaging plumbing lives in one shared library, so the three services contain only business logic.
